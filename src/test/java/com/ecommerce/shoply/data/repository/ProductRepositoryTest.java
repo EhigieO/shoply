@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Slf4j
-@Sql(scripts={"/db/insert.sql"})
+//@Sql(scripts={"/db/insert.sql"})
 public
 class ProductRepositoryTest {
 
@@ -26,6 +26,7 @@ class ProductRepositoryTest {
     @BeforeEach
     void setUp() {
     }
+
 
     @Test
     void createProductTest() {
@@ -51,31 +52,63 @@ class ProductRepositoryTest {
     }
 
     @Test
-    @Transactional
+    //@Transactional
     public void whenFallAllProductIsCalledThenProductListIsReturnedTest(){
         List<Product> products = productRepositoryImpl.findAll();
-        assertThat(products).hasSize(4);
+        assertThat(products).hasSize(3);
         log.info("Product returned from database-> {}", products);
     }
 
     @Test
     void findExistingProductById(){
-        Product existingProduct = productRepositoryImpl.findById(110L).orElse(null);
+        Product product = new Product();
+        product.setName("Luxury Sofa");
+        product.setPrice(400D);
+        product.setCurrency(NGN);
+        product.setDetails("Lorem Ipsum is slechts een proeftekst" +
+                " uit het drukkerij- en zetterijwezen. Lorem Ipsum " +
+                "is de standaard proeftekst in deze bedrijfstak sinds " +
+                "de 16e eeuw, toen een onbekende drukker een zethaak met " +
+                "letters nam en ze door elkaar husselde om een font-catalogus " +
+                "te maken. Het heeft niet alleen vijf eeuwen overleefd maar is ook, " +
+                "vrijwel onveranderd, overgenomen in elektronische letterzetting. " +
+                "Het is in de jaren '60 populair geworden met de introductie van Letraset.");
+
+        assertThat(product).isNotNull();
+        assertThat(product.getId()).isNull();
+        log.info("Product before saving -> {}", product);
+        Product savedProduct = productRepositoryImpl.save(product);
+        assertThat(product.getId()).isNotNull();
+        log.info("Product after saving -> {}", product);
+
+        Product existingProduct = productRepositoryImpl.findById(1L).orElse(null);
         assertThat(existingProduct).isNotNull();
         log.info("Product --> {}", existingProduct);
     }
 
     @Test
     public void deleteExistingProductById(){
-        assertThat(productRepositoryImpl.findById(110L).orElse(null)).isNotNull();
-        productRepositoryImpl.deleteById(110L);
-        assertThat(productRepositoryImpl.findById(110L).orElse(null)).isNull();
-    }
+        Product product = new Product();
+        product.setName("Luxury Sofa");
+        product.setPrice(400D);
+        product.setCurrency(NGN);
+        product.setDetails("Lorem Ipsum is slechts een proeftekst" +
+                " uit het drukkerij- en zetterijwezen. Lorem Ipsum " +
+                "is de standaard proeftekst in deze bedrijfstak sinds " +
+                "de 16e eeuw, toen een onbekende drukker een zethaak met " +
+                "letters nam en ze door elkaar husselde om een font-catalogus " +
+                "te maken. Het heeft niet alleen vijf eeuwen overleefd maar is ook, " +
+                "vrijwel onveranderd, overgenomen in elektronische letterzetting. " +
+                "Het is in de jaren '60 populair geworden met de introductie van Letraset.");
 
-    public void updateProduct(){
-
+        assertThat(product).isNotNull();
+        assertThat(product.getId()).isNull();
+        log.info("Product before saving -> {}", product);
+        Product savedProduct = productRepositoryImpl.save(product);
+        assertThat(product.getId()).isNotNull();
+        log.info("Product after saving -> {}", product);
+        assertThat(productRepositoryImpl.findById(1L).orElse(null)).isNotNull();
+        productRepositoryImpl.deleteById(1L);
+        assertThat(productRepositoryImpl.findById(1L).orElse(null)).isNull();
     }
-//        log.info("Product before saving -> {}", product);
-//        Product savedProduct = productRepositoryImpl.update(product));
-//    }
 }

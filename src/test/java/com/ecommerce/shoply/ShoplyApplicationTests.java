@@ -26,7 +26,7 @@ class ShoplyApplicationTests {
 
 	@Test
 	public void printValues(){
-		assertThat(name).isEqualTo("Oluwatobi");
+		assertThat(name).isEqualTo("Ehigie");
 		assertThat(currentYear).isEqualTo("2021");
 		log.info("Test name -> {}", name);
 		log.info("Test year -> {}", currentYear);
